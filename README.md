@@ -17,7 +17,7 @@ A vim plugin that creates/auto-loads cscope index database.
 
     :BundleInstall jetm/vim-cscope
 
-    Add the line below into your _.vimrc_.
+Add the line below into your _.vimrc_.
 
     Bundle 'jetm/vim-cscope'
 
