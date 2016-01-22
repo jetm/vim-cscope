@@ -1,23 +1,23 @@
-vim-cscope
+vim-cscope-cstags
 ==========
 
 ## Description
 
-A vim plugin that creates/auto-loads cscope index database.
+A vim plugin that creates, auto-loads cscope and ctags databases.
 
 ## Installation
 
 ### [pathogen.vim](https://github.com/tpope/vim-pathogen)
 
     $ cd ~/.vim/bundle
-    $ git clone git://github.com/jetm/vim-cscope.git
+    $ git clone git://github.com/jetm/vim-cscope-ctags.git
 
 
 ### [Vundle](https://github.com/gmarik/vundle.git)
 
-    :BundleInstall jetm/vim-cscope
+    :PluginInstall jetm/vim-cscope-ctags
 
 Add the line below into your _.vimrc_.
 
-    Bundle 'jetm/vim-cscope'
+    Plugin 'jetm/vim-cscope-ctags'
 
