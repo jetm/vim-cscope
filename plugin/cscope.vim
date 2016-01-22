@@ -33,6 +33,7 @@ python << EOF
 import os
 import vim
 
+CTAGS_OUT = 'tags'
 CSCOPE_OUT = 'cscope.out'
 
 def LocateIndexDatabaseFile(file_name):
@@ -69,6 +70,12 @@ def LocateIndexDatabaseFile(file_name):
 # Kill all cscope connections first.
 vim.command('cs kill -1')
 
+# Load ctags index database.
+ctags_db, _ = LocateIndexDatabaseFile(CTAGS_OUT)
+if ctags_db:
+  vim.command('set tags+=%s' % ctags_db)
+  print 'Loaded ctags database.'
+
 # Load cscope index database.
 cscope_db, base_path = LocateIndexDatabaseFile(CSCOPE_OUT)
 if cscope_db is None:
@@ -92,6 +99,8 @@ import os
 import vim
 from subprocess import Popen, PIPE, CalledProcessError
 
+CTAGS_OUT = 'tags'
+CTAGS_FILES = 'tags.files'
 CSCOPE_OUT = 'cscope.out'
 CSCOPE_FILES = 'cscope.files'
 IGNORE_PATH_FILE = 'ignore_paths'
@@ -147,6 +156,19 @@ if os.path.exists(base_path):
   if os.path.exists(ignore_path_file):
     with open(ignore_path_file, 'r') as f:
       ignore_paths += [path.strip() for path in f.readlines()]
+
+  print 'Building ctags...'
+  try:
+    ctags_files = os.path.join(db_path, CTAGS_FILES)
+    Spawn(ConstructFindArgs('.', ['*'], ctags_files, ignore_paths=ignore_paths),
+          cwd=base_path)
+    Spawn(['ctags', '-L', '%s' % ctags_files, '--tag-relative=yes', '-f',
+          '%s' % os.path.join(db_path, CTAGS_OUT)],
+          cwd=base_path)
+  except CalledProcessError as e:
+    print 'Failed: %s' % e
+  except OSError as e:
+    print 'Failed: %s' % e
 
   print 'Building cscope...'
   try:
