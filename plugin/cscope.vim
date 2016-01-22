@@ -162,7 +162,8 @@ if os.path.exists(base_path):
     ctags_files = os.path.join(db_path, CTAGS_FILES)
     Spawn(ConstructFindArgs('.', ['*'], ctags_files, ignore_paths=ignore_paths),
           cwd=base_path)
-    Spawn(['ctags', '-L', '%s' % ctags_files, '--tag-relative=yes', '-f',
+    Spawn(['ctags', '-L', '%s' % ctags_files, '--fields=+l',
+          '--tag-relative=yes', '-f',
           '%s' % os.path.join(db_path, CTAGS_OUT)],
           cwd=base_path)
   except CalledProcessError as e:
