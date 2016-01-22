@@ -74,7 +74,7 @@ vim.command('cs kill -1')
 ctags_db, _ = LocateIndexDatabaseFile(CTAGS_OUT)
 if ctags_db:
   vim.command('set tags+=%s' % ctags_db)
-  print 'Loaded ctags database.'
+  # print 'Loaded ctags database.'
 
 # Load cscope index database.
 cscope_db, base_path = LocateIndexDatabaseFile(CSCOPE_OUT)
@@ -157,7 +157,6 @@ if os.path.exists(base_path):
     with open(ignore_path_file, 'r') as f:
       ignore_paths += [path.strip() for path in f.readlines()]
 
-  print 'Building ctags...'
   try:
     ctags_files = os.path.join(db_path, CTAGS_FILES)
     Spawn(ConstructFindArgs('.', ['*'], ctags_files, ignore_paths=ignore_paths),
@@ -170,7 +169,6 @@ if os.path.exists(base_path):
   except OSError as e:
     print 'Failed: %s' % e
 
-  print 'Building cscope...'
   try:
     cscope_files = os.path.join(db_path, CSCOPE_FILES)
     Spawn(ConstructFindArgs('.', ['*.c', '*.cc', '*.cpp', '*.h'], cscope_files,
