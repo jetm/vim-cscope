@@ -3,7 +3,7 @@ vim-cscope-cstags
 
 ## Description
 
-A vim plugin that creates, auto-loads cscope and ctags databases.
+A vim plugin that generate and auto-loads cscope/ctags databases.
 
 ## Installation
 
