@@ -4,11 +4,12 @@
 
 function! FindGitRepoPath()
 python << EOF
+
 """Find the path to the .git directory.
 
 Returns:
-  The full path to the .git directory, or current working directory if the .git
-  directory is not found.
+    The full path to the .git directory, or current working directory if the
+    .git directory is not found.
 """
 import os
 
@@ -30,11 +31,20 @@ endfunction
 function! ConnectCscopeDatabase()
 python << EOF
 
+"""Locates and connects existing ctags, cscope, and pycscope databases."""
+
 import os
+import sys
+
 import vim
 
 CTAGS_OUT = 'tags'
 CSCOPE_OUT = 'cscope.out'
+
+def VimCommand(command):
+  if not vim.vars['cscope_ctags_verbose']:
+    command = "silent " + command
+  vim.command(command)
 
 def LocateIndexDatabaseFile(file_name):
   """
@@ -67,14 +77,20 @@ def LocateIndexDatabaseFile(file_name):
 
   return (None, None)
 
+def Debug(*args, **kwargs):
+  """Prints debug message when cscope_ctags_verbose is set."""
+  if vim.vars['cscope_ctags_verbose']:
+    sys.stdout.write(*args, **kwargs)
+
+
 # Kill all cscope connections first.
-vim.command('cs kill -1')
+VimCommand('cs kill -1')
 
 # Load ctags index database.
 ctags_db, _ = LocateIndexDatabaseFile(CTAGS_OUT)
 if ctags_db:
-  vim.command('set tags+=%s' % ctags_db)
-  # print 'Loaded ctags database.'
+  VimCommand('set tags+=%s' % ctags_db)
+  Debug('Loaded ctags database.')
 
 # Load cscope index database.
 cscope_db, base_path = LocateIndexDatabaseFile(CSCOPE_OUT)
@@ -84,8 +100,8 @@ if cscope_db is None:
     cscope_db = cscope_path
     base_path = ''
 if cscope_db:
-  vim.command('cs add %s %s' % (cscope_db, base_path))
-  # print 'Loaded cscope database.'
+  VimCommand('cs add %s %s' % (cscope_db, base_path))
+  Debug('Loaded cscope database.')
 
 EOF
 endfunction
@@ -190,5 +206,8 @@ endfunction
 nnoremap <leader>cs :call call(function('BuildCscopeDatabase'), [])<CR>
 
 if has("cscope")
+  if !exists("g:cscope_ctags_verbose")
+    let g:cscope_ctags_verbose = 0
+  endif
   call ConnectCscopeDatabase()
 endif
